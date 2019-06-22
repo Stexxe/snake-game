@@ -1,3 +1,5 @@
+const TILE_SIZE = 32;
+
 export default class Snake {
   constructor(ctx) {
     this.ctx = ctx;
@@ -7,10 +9,10 @@ export default class Snake {
 
   move() {
     const directionToFn = {
-      left: () => {this.x -= 32},
-      right: () => {this.x += 32},
-      up: () => {this.y -= 32},
-      down: () => {this.y += 32},
+      left: () => {this.x -= 1},
+      right: () => {this.x += 1},
+      up: () => {this.y -= 1},
+      down: () => {this.y += 1},
     };
 
     if (directionToFn[this.direction]) {
@@ -19,7 +21,16 @@ export default class Snake {
   }
 
   render() {
-    this.ctx.fillRect(this.x, this.y, 32, 32);
+    this.ctx.fillRect(this.x * TILE_SIZE, this.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+
+  get position() {
+    return [this.x, this.y];
+  }
+
+  set position([x, y]) {
+    this.x = x;
+    this.y = y;
   }
 
   get direction() {
