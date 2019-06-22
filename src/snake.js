@@ -3,20 +3,20 @@ import {TILE_SIZE} from './defaults';
 export default class Snake {
   constructor(ctx) {
     this.ctx = ctx;
-    this.x = 0;
-    this.y = 0;
+    this.head = [0, 0];
+    this.tail = [];
   }
 
   move() {
     const directionToFn = {
-      left: () => {this.x -= 1},
-      right: () => {this.x += 1},
-      up: () => {this.y -= 1},
-      down: () => {this.y += 1},
+      left: (x, y) => [x - 1, y],
+      right: (x, y) => [x + 1, y],
+      up: (x, y) => [x, y - 1],
+      down: (x, y) => [x, y + 1],
     };
 
     if (directionToFn[this.direction]) {
-      directionToFn[this.direction]();
+      this.head = directionToFn[this.direction](...this.head);
     }
   }
 
@@ -25,16 +25,16 @@ export default class Snake {
   }
 
   render() {
-    this.ctx.fillRect(this.x * TILE_SIZE, this.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    const [x, y] = this.head;
+    this.ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 
   get position() {
-    return [this.x, this.y];
+    return this.head;
   }
 
-  set position([x, y]) {
-    this.x = x;
-    this.y = y;
+  set position(pos) {
+    this.head = pos;
   }
 
   get direction() {

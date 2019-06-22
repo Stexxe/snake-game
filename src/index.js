@@ -27,10 +27,12 @@ loadAssets().then(({foodIcon}) => {
 
     const delta = Date.now() - prevFrameTime;
     elapsed += delta;
+
     food.render();
     score.render();
 
     if (elapsed >= 500) {
+      elapsed = 0;
       snake.move();
 
       if (Field.isSamePosition(snake.position, food.position)) {
@@ -42,8 +44,6 @@ loadAssets().then(({foodIcon}) => {
       if (field.isOutside(snake.position)) {
         gameOver();
       }
-
-      elapsed = 0;
     }
 
     snake.render();
