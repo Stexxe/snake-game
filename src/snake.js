@@ -20,6 +20,10 @@ export default class Snake {
     }
   }
 
+  eat(food) {
+    console.log(food);
+  }
+
   render() {
     this.ctx.fillRect(this.x * TILE_SIZE, this.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }

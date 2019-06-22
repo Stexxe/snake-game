@@ -1,6 +1,7 @@
 import Snake from './snake';
 import Field from './field';
 import Food from './food';
+import Score from './score';
 
 
 const canvas = document.getElementsByTagName('canvas')[0];
@@ -13,8 +14,10 @@ loadAssets().then(({foodIcon}) => {
   food.position = [10, 10];
 
   const snake = new Snake(ctx);
-  snake.position = [5, 5];
+  snake.position = [8, 8];
   snake.direction = 'right';
+
+  const score = new Score(document.getElementsByClassName('score')[0]);
 
   let prevFrameTime = Date.now();
   let elapsed = 0;
@@ -25,9 +28,16 @@ loadAssets().then(({foodIcon}) => {
     const delta = Date.now() - prevFrameTime;
     elapsed += delta;
     food.render();
+    score.render();
 
     if (elapsed >= 500) {
       snake.move();
+
+      if (Field.isSamePosition(snake.position, food.position)) {
+        snake.eat(food);
+        food.position = field.randomPosition;
+        score.add(10);
+      }
 
       if (field.isOutside(snake.position)) {
         gameOver();

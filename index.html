@@ -8,6 +8,11 @@
             border: 1px solid green;
         }
 
+        .wrap {
+            position: relative;
+            display: inline-block;
+        }
+
         .over {
             position: absolute;
             left: 225px;
@@ -16,6 +21,13 @@
             color: #ff36c0;
             display: none;
         }
+
+        .score {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 25px;
+        }
     </style>
 </head>
 <body>
@@ -23,6 +35,9 @@
         <canvas width="640" height="640"></canvas>
         <div class="over">
             Game over!
+        </div>
+        <div class="score">
+            Score:
         </div>
     </div>
 

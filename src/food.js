@@ -12,6 +12,10 @@ export default class Food {
     this.y = y;
   }
 
+  get position() {
+    return [this.x, this.y];
+  }
+
   render() {
     this.ctx.drawImage(this.icon, this.x * TILE_SIZE, this.y * TILE_SIZE);
   }
