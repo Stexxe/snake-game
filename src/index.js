@@ -1,51 +1,70 @@
 import Snake from './snake';
 import Field from './field';
+import Food from './food';
+
 
 const canvas = document.getElementsByTagName('canvas')[0];
 const ctx = canvas.getContext('2d');
 
-const field = new Field(20, 20);
-const snake = new Snake(ctx);
-snake.position = [5, 5];
-snake.direction = 'right';
+loadAssets().then(({foodIcon}) => {
+  const field = new Field(20, 20);
 
-let prevFrameTime = Date.now();
-let elapsed = 0;
+  const food = new Food(ctx, foodIcon);
+  food.position = [10, 10];
 
-window.requestAnimationFrame(function callback() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const snake = new Snake(ctx);
+  snake.position = [5, 5];
+  snake.direction = 'right';
 
-  const delta = Date.now() - prevFrameTime;
-  elapsed += delta;
+  let prevFrameTime = Date.now();
+  let elapsed = 0;
 
-  if (elapsed >= 500) {
-    snake.move();
+  window.requestAnimationFrame(function callback() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (field.isOutside(snake.position)) {
-      gameOver();
+    const delta = Date.now() - prevFrameTime;
+    elapsed += delta;
+    food.render();
+
+    if (elapsed >= 500) {
+      snake.move();
+
+      if (field.isOutside(snake.position)) {
+        gameOver();
+      }
+
+      elapsed = 0;
     }
 
-    elapsed = 0;
-  }
+    snake.render();
 
-  snake.render();
+    prevFrameTime = Date.now();
+    window.requestAnimationFrame(callback);
+  });
 
-  prevFrameTime = Date.now();
-  window.requestAnimationFrame(callback);
+  window.addEventListener('keydown', (e) => {
+    const keyToDirection = {
+      ArrowLeft: 'left',
+      ArrowRight: 'right',
+      ArrowUp: 'up',
+      ArrowDown: 'down',
+    };
+
+    if (keyToDirection[e.key]) {
+      snake.direction = keyToDirection[e.key];
+    }
+  });
 });
 
-window.addEventListener('keydown', (e) => {
-  const keyToDirection = {
-    ArrowLeft: 'left',
-    ArrowRight: 'right',
-    ArrowUp: 'up',
-    ArrowDown: 'down',
-  };
-
-  if (keyToDirection[e.key]) {
-    snake.direction = keyToDirection[e.key];
-  }
-});
+function loadAssets() {
+  return new Promise((resolve) => {
+    const foodIcon = new Image();
+    foodIcon.src = 'assets/apple.png';
+    foodIcon.addEventListener('load', () => {
+      resolve({foodIcon})
+    });
+  })
+}
 
 function gameOver() {
   document.getElementsByClassName('over')[0].style.display = 'block';
