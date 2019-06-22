@@ -4,7 +4,7 @@ module.exports = {
     'es6': true,
   },
   'extends': [
-    'google',
+    'eslint:recommended',
   ],
   'globals': {
     'Atomics': 'readonly',
