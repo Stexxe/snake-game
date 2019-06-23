@@ -5,6 +5,7 @@ export default class Snake {
     this.ctx = ctx;
     this.head = [0, 0];
     this.tail = [];
+    this.growed = [];
   }
 
   move() {
@@ -16,14 +17,19 @@ export default class Snake {
     };
 
     if (directionToFn[this.direction]) {
-      const prevPosition = [this.head, ...this.tail];
+      this.tail = this.position.slice(0, this.position.length - 1).concat(this.growed);
+      this.growed = [];
       this.head = directionToFn[this.direction](this.head);
-      this.tail = prevPosition.slice(0, prevPosition.length - 1)
     }
   }
 
-  eat(food) {
-    console.log(food);
+  meet([x, y]) {
+    const [hx, hy] = this.head;
+    return hx === x && hy === y;
+  }
+
+  eat() {
+   this.growed = [this.tail[this.tail.length - 1]];
   }
 
   render() {
@@ -40,7 +46,7 @@ export default class Snake {
   }
 
   get position() {
-    return this.head;
+    return [this.head, ...this.tail];
   }
 
   set position([head, ...tail]) {

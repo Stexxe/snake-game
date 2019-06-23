@@ -35,13 +35,13 @@ loadAssets().then(({foodIcon}) => {
       elapsed = 0;
       snake.move();
 
-      if (Field.isSamePosition(snake.position, food.position)) {
-        snake.eat(food);
+      if (snake.meet(food.position)) {
+        snake.eat();
         food.position = field.randomPosition;
         score.add(10);
       }
 
-      if (field.isOutside(snake.position)) {
+      if (!field.isInside(snake.position)) {
         gameOver();
       }
     }
