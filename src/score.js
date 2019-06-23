@@ -12,4 +12,8 @@ export default class Score {
   render() {
     this.element.innerText = `${this.prefix} ${this.score}`;
   }
+
+  get points() {
+    return this.score;
+  }
 }

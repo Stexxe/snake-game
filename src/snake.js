@@ -1,4 +1,5 @@
 import {TILE_SIZE} from './defaults';
+import Cell from './cell';
 
 export default class Snake {
   constructor(ctx) {
@@ -19,13 +20,12 @@ export default class Snake {
     if (directionToFn[this.direction]) {
       this.tail = this.position.slice(0, this.position.length - 1).concat(this.growed);
       this.growed = [];
-      this.head = directionToFn[this.direction](this.head);
+      this.head = Cell.of(directionToFn[this.direction](this.head));
     }
   }
 
-  meet([x, y]) {
-    const [hx, hy] = this.head;
-    return hx === x && hy === y;
+  meet(cell) {
+    return cell.equals(this.head);
   }
 
   eat() {
@@ -50,8 +50,8 @@ export default class Snake {
   }
 
   set position([head, ...tail]) {
-    this.head = head;
-    this.tail = tail;
+    this.head = Cell.of(head);
+    this.tail = tail.map(Cell.of);
   }
 
   get direction() {

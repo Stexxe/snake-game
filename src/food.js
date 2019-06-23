@@ -1,4 +1,5 @@
 import {TILE_SIZE} from './defaults';
+import Cell from './cell';
 
 export default class Food {
 
@@ -8,15 +9,14 @@ export default class Food {
   }
 
   set position([x, y]) {
-    this.x = x;
-    this.y = y;
+    this.pos = new Cell(x, y);
   }
 
   get position() {
-    return [this.x, this.y];
+    return this.pos;
   }
 
   render() {
-    this.ctx.drawImage(this.icon, this.x * TILE_SIZE, this.y * TILE_SIZE);
+    this.ctx.drawImage(this.icon, this.pos.x * TILE_SIZE, this.pos.y * TILE_SIZE);
   }
 }

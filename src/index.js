@@ -3,7 +3,6 @@ import Field from './field';
 import Food from './food';
 import Score from './score';
 
-
 const canvas = document.getElementsByTagName('canvas')[0];
 const ctx = canvas.getContext('2d');
 
@@ -21,6 +20,7 @@ loadAssets().then(({foodIcon}) => {
 
   let prevFrameTime = Date.now();
   let elapsed = 0;
+  let delay = 500;
 
   window.requestAnimationFrame(function callback() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -31,7 +31,7 @@ loadAssets().then(({foodIcon}) => {
     food.render();
     score.render();
 
-    if (elapsed >= 500) {
+    if (elapsed >= delay) {
       elapsed = 0;
       snake.move();
 
@@ -41,10 +41,18 @@ loadAssets().then(({foodIcon}) => {
         score.add(10);
       }
 
+      if (snake.tail.some(snake.meet.bind(snake))) {
+        gameOver();
+      }
+
       if (!field.isInside(snake.position)) {
         gameOver();
       }
     }
+
+    // if (score.points > 0 && score.points % 50 === 0) {
+    //   delay -= 30;
+    // }
 
     snake.render();
 
