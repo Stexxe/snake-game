@@ -5,8 +5,8 @@ export default class Field {
     this.height = height;
   }
 
-  isInside(cells) {
-    return cells.every(this.isCellInside.bind(this));
+  isOutside(cells) {
+    return !cells.every(this.isCellInside.bind(this));
   }
 
   isCellInside([x, y]) {

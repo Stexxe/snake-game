@@ -2,11 +2,13 @@ import Snake from './snake';
 import Field from './field';
 import Food from './food';
 import Score from './score';
+import Game from './game';
 
 const canvas = document.getElementsByTagName('canvas')[0];
 const ctx = canvas.getContext('2d');
+const game = new Game();
 
-loadAssets().then(({foodIcon}) => {
+game.loadAssets().then(({foodIcon}) => {
   const field = new Field(20, 20);
 
   const food = new Food(ctx, foodIcon);
@@ -18,47 +20,34 @@ loadAssets().then(({foodIcon}) => {
 
   const score = new Score(document.getElementsByClassName('score')[0]);
 
-  let prevFrameTime = Date.now();
-  let elapsed = 0;
-  let delay = 500;
+  game.delay = 200;
 
-  window.requestAnimationFrame(function callback() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const delta = Date.now() - prevFrameTime;
-    elapsed += delta;
-
-    food.render();
-    score.render();
-
-    if (elapsed >= delay) {
-      elapsed = 0;
-      snake.move();
-
-      if (snake.meet(food.position)) {
-        snake.eat();
-        food.position = field.randomPosition;
-        score.add(10);
-      }
-
-      if (snake.tail.some(snake.meet.bind(snake))) {
-        gameOver();
-      }
-
-      if (!field.isInside(snake.position)) {
-        gameOver();
-      }
+  game.onTick = () => {
+    if (game.over) {
+      return;
     }
 
-    // if (score.points > 0 && score.points % 50 === 0) {
-    //   delay -= 30;
-    // }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    snake.move();
+
+    if (snake.meet(food.position)) {
+      snake.eat();
+      food.position = field.randomPosition;
+      score.add(10);
+    }
+
+    const snakeEatsSelf = snake.tail.some(snake.meet.bind(snake));
+    if (snakeEatsSelf || field.isOutside(snake.position)) {
+      game.over = true;
+    }
 
     snake.render();
+    food.render();
+    score.render();
+  };
 
-    prevFrameTime = Date.now();
-    window.requestAnimationFrame(callback);
-  });
+  game.start();
 
   window.addEventListener('keydown', (e) => {
     const keyToDirection = {
@@ -73,17 +62,3 @@ loadAssets().then(({foodIcon}) => {
     }
   });
 });
-
-function loadAssets() {
-  return new Promise((resolve) => {
-    const foodIcon = new Image();
-    foodIcon.src = 'assets/apple.png';
-    foodIcon.addEventListener('load', () => {
-      resolve({foodIcon})
-    });
-  })
-}
-
-function gameOver() {
-  document.getElementsByClassName('over')[0].style.display = 'block';
-}

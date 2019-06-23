@@ -33,12 +33,12 @@ export default class Snake {
   }
 
   render() {
-    this.renderBlock(this.head);
-
     this.ctx.save();
     this.ctx.fillStyle = 'green';
     this.tail.forEach(this.renderBlock.bind(this));
     this.ctx.restore();
+
+    this.renderBlock(this.head);
   }
 
   renderBlock([x, y]) {
