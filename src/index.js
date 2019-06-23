@@ -14,7 +14,7 @@ loadAssets().then(({foodIcon}) => {
   food.position = [10, 10];
 
   const snake = new Snake(ctx);
-  snake.position = [8, 8];
+  snake.position = [[8, 8], [7, 8], [6, 8]];
   snake.direction = 'right';
 
   const score = new Score(document.getElementsByClassName('score')[0]);

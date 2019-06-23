@@ -9,14 +9,16 @@ export default class Snake {
 
   move() {
     const directionToFn = {
-      left: (x, y) => [x - 1, y],
-      right: (x, y) => [x + 1, y],
-      up: (x, y) => [x, y - 1],
-      down: (x, y) => [x, y + 1],
+      left: ([x, y]) => [x - 1, y],
+      right: ([x, y]) => [x + 1, y],
+      up: ([x, y]) => [x, y - 1],
+      down: ([x, y]) => [x, y + 1],
     };
 
     if (directionToFn[this.direction]) {
-      this.head = directionToFn[this.direction](...this.head);
+      const prevPosition = [this.head, ...this.tail];
+      this.head = directionToFn[this.direction](this.head);
+      this.tail = prevPosition.slice(0, prevPosition.length - 1)
     }
   }
 
@@ -25,7 +27,15 @@ export default class Snake {
   }
 
   render() {
-    const [x, y] = this.head;
+    this.renderBlock(this.head);
+
+    this.ctx.save();
+    this.ctx.fillStyle = 'green';
+    this.tail.forEach(this.renderBlock.bind(this));
+    this.ctx.restore();
+  }
+
+  renderBlock([x, y]) {
     this.ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 
@@ -33,8 +43,9 @@ export default class Snake {
     return this.head;
   }
 
-  set position(pos) {
-    this.head = pos;
+  set position([head, ...tail]) {
+    this.head = head;
+    this.tail = tail;
   }
 
   get direction() {
@@ -42,6 +53,17 @@ export default class Snake {
   }
 
   set direction(dir) {
-    this.dir = dir;
+    if (!this.isCounterDirection(dir)) {
+      this.dir = dir;
+    }
+  }
+
+  isCounterDirection(direction) {
+    return {
+      left: 'right',
+      right: 'left',
+      up: 'down',
+      down: 'up',
+    }[direction] === this.direction;
   }
 }
